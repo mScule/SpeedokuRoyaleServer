@@ -22,10 +22,9 @@ public class TodoController : ControllerBase
 
     // Create
     [HttpPost]
-    public async Task<ActionResult<TodoItem>> Post(TodoItem todoItem)
+    public async Task<ActionResult<TodoItem>> Post(string task, bool isComplete)
     {
-        if (todoItem.Id != null)
-            return BadRequest("Id is automatically incremented");
+        TodoItem todoItem = new TodoItem { Task = task, IsComplete = isComplete };
 
         await todoService.Create(todoItem);
         if (todoItem.Id != default)
@@ -55,7 +54,7 @@ public class TodoController : ControllerBase
 
     // Update
     [HttpPut]
-    public async Task<ActionResult<TodoItem>> Put(TodoItem todoItem)
+    public async Task<ActionResult<TodoItem>> Put([FromQuery] TodoItem todoItem)
     {
         if (todoItem.Id == null)
             return BadRequest("Id has to be stated");
