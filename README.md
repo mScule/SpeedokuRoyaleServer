@@ -10,6 +10,9 @@ Make sure you have these installed
 - **.NET 6** (Both **SDK**, and **Runtime**)
   https://dotnet.microsoft.com/en-us/download
 
+- **Entity framework tools**
+  `dotnet tool install --global dotnet-ef`
+
 - **VS Code**
   https://code.visualstudio.com/
 
@@ -78,3 +81,11 @@ OmniSharp is acting up. Restart OmniSharp by opening QuickOpen with **CTRL + P**
 and writing following line and press **Enter**:
 
 `> Omnisharp: Restart OmniSharp`
+
+## Migrations
+
+Add new migration:
+`dotnet ef migrations add NAME_GOES_HERE`
+
+Update database:
+`dotnet ef database update`
