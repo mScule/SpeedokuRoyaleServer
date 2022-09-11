@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-namespace SpeedokuRoyaleServer.Models;
+using SpeedokuRoyaleServer.Models.DbContexts;
+
+namespace SpeedokuRoyaleServer.Models.Services;
 
 public sealed class MariaDbTodoService
 {

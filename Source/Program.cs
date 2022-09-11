@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using SpeedokuRoyaleServer.Models;
+using SpeedokuRoyaleServer.Models.DbContexts;
+using SpeedokuRoyaleServer.Models.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

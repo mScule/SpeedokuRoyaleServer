@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace SpeedokuRoyaleServer.Models;
+namespace SpeedokuRoyaleServer.Models.DbContexts;
 
 public class MariaDbContext : DbContext
 {

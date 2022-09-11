@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SpeedokuRoyaleServer.Models;
+using SpeedokuRoyaleServer.Models.Services;
 
 namespace SpeedokuRoyaleServer.Controllers;
 
