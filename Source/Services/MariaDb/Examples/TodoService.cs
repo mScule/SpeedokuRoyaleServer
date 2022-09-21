@@ -1,17 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using SpeedokuRoyaleServer.Models.DbContexts;
 
-namespace SpeedokuRoyaleServer.Models.Services;
+namespace SpeedokuRoyaleServer.Models.Services.MariaDB;
 
-public sealed class MariaDbTodoService
+public sealed class TodoService
 {
     private MariaDbContext dbContext;
 
-    public MariaDbTodoService(MariaDbContext dbContext) =>
+    public TodoService(MariaDbContext dbContext) =>
         this.dbContext = dbContext;
 
     // Create
-    public async Task<long?> Create(TodoItem todoItem)
+    public async Task<ulong?> Create(TodoItem todoItem)
     {
         await dbContext.AddAsync(todoItem);
         await dbContext.SaveChangesAsync();
@@ -22,7 +22,7 @@ public sealed class MariaDbTodoService
     public async Task<IEnumerable<TodoItem>> FindAll() =>
         await dbContext.TodoItems.ToListAsync();
 
-    public async Task<TodoItem?> FindOne(long id)
+    public async Task<TodoItem?> FindOne(ulong id)
     {
         TodoItem? result = await dbContext.TodoItems.FirstOrDefaultAsync(
             token => token.Id == id
@@ -45,7 +45,7 @@ public sealed class MariaDbTodoService
     }
 
     // Delete
-    public async Task<int> Delete(long id)
+    public async Task<int> Delete(ulong id)
     {
         try
         {

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpeedokuRoyaleServer.Models.DbContexts;
 
@@ -10,9 +11,10 @@ using SpeedokuRoyaleServer.Models.DbContexts;
 namespace SpeedokuRoyaleServer.Migrations
 {
     [DbContext(typeof(MariaDbContext))]
-    partial class MariaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220921190945_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
