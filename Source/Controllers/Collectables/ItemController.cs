@@ -22,7 +22,8 @@ public class ItemController : ControllerBase {
 
     // Create
     [HttpPost]
-    public async Task<ActionResult<Item>> Post(
+    public async Task<ActionResult<Item>> Post
+    (
         Rarity rarity
     )
     {

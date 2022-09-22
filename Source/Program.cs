@@ -16,6 +16,7 @@ builder.Services.AddScoped<TodoService>();
 // Speedoku royale server services
 builder.Services.AddScoped<PlayerService>();
 builder.Services.AddScoped<ItemService>();
+builder.Services.AddScoped<InventoryService>();
 
 // Controllers
 builder.Services.AddControllers().AddJsonOptions(x =>

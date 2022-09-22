@@ -23,18 +23,8 @@ public class PlayerController : ControllerBase
 
     // Create
     [HttpPost]
-    public async Task<ActionResult<Player>> Post(
-        string email,
-        string name,
-        string password
-    )
+    public async Task<ActionResult<Player>> Post([FromBody]Player player)
     {
-        Player player = new Player {
-            Email = email,
-            Name = name,
-            Password = password
-        };
-
         await playerService.Create(player);
         if (player.Id != default)
             return CreatedAtRoute(
@@ -65,7 +55,7 @@ public class PlayerController : ControllerBase
 
     // Update
     [HttpPut]
-    public async Task<ActionResult<Player>> Put([FromQuery] Player player)
+    public async Task<ActionResult<Player>> Put([FromBody] Player player)
     {
         if (player.Id == null)
             return BadRequest("Id has to be stated");

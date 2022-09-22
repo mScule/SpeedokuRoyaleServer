@@ -3,36 +3,36 @@ using SpeedokuRoyaleServer.Models.DbContexts;
 
 namespace SpeedokuRoyaleServer.Models.Services.MariaDB;
 
-public sealed class ItemService : Service
+public sealed class InventoryService : Service
 {
-    public ItemService(MariaDbContext dbContext) : base(dbContext) { }
+    public InventoryService(MariaDbContext dbContext) : base(dbContext) { }
 
     // Create
-    public async Task<ulong?> Create(Item item)
+    public async Task<ulong?> Create(Inventory inventory)
     {
-        await dbContext.AddAsync(item);
+        await dbContext.AddAsync(inventory);
         await dbContext.SaveChangesAsync();
-        return item.Id;
+        return inventory.Id;
     }
 
     // Read
-    public async Task<IEnumerable<Item>> FindAll() =>
-        await dbContext.Items.ToListAsync();
+    public async Task<IEnumerable<Inventory>> FindAll() =>
+        await dbContext.Inventories.ToListAsync();
 
-    public async Task<Item?> FindOne(ulong id)
+    public async Task<Inventory?> FindOne(ulong id)
     {
-        Item? result = await dbContext.Items.FirstOrDefaultAsync(
-            token => token.Id == id
-        );
+        Inventory? result = await dbContext.Inventories
+            .FirstOrDefaultAsync(token => token.Id == id);
+
         return result;
     }
 
     // Update
-    public async Task<int> Update(Item item)
+    public async Task<int> Update(Inventory inventory)
     {
         try
         {
-            dbContext.Update(item);
+            dbContext.Update(inventory);
             return await dbContext.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -46,7 +46,7 @@ public sealed class ItemService : Service
     {
         try
         {
-            dbContext.Items.Remove(new Item { Id = id });
+            dbContext.Inventories.Remove(new Inventory { Id = id });
             return await dbContext.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
