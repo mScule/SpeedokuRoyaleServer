@@ -1,0 +1,25 @@
+version: "3"
+services:
+  db:
+    image: mariadb:10.7.6
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: speedoku_royale_db
+      MARIADB_USER: admin
+      MARIADB_PASSWORD: admin
+    ports:
+      - "3306:3306"
+  server:
+    build: .
+    image: speedoku-royale-server
+    restart: always
+    ports:
+      - "8000:8000"
+      - "47819:47819"
+      - "44366:44366"
+    environment:
+      - "INIT_DB=$INIT_DB"
+      - "RESET_DB=$RESET_DB"
+    depends_on:
+      - db
