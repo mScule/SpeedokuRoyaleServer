@@ -11,13 +11,12 @@ public class MariaDbContext : DbContext
     public DbSet<TodoItem> TodoItems { get; set; } = null!;
 
     // Speedoku Royale Models
-    public DbSet<Player>              Players              { get; set; } = null!;
-    public DbSet<Item>                Items                { get; set; } = null!;
-    public DbSet<Inventory>           Inventories          { get; set; } = null!;
-    public DbSet<SingleplayerGame>    SingleplayerGames    { get; set; } = null!;
-    public DbSet<MultiplayerGame>     MultiplayerGames     { get; set; } = null!;
-    public DbSet<SingleplayerSession> SingleplayerSessions { get; set; } = null!;
-    public DbSet<MultiplayerSession>  MultiplayerSessions  { get; set; } = null!;
+    public DbSet<Player>              Players             { get; set; } = null!;
+    public DbSet<Item>                Items               { get; set; } = null!;
+    public DbSet<Inventory>           Inventories         { get; set; } = null!;
+    public DbSet<SingleplayerGame>    SingleplayerGames   { get; set; } = null!;
+    public DbSet<MultiplayerGame>     MultiplayerGames    { get; set; } = null!;
+    public DbSet<MultiplayerSession>  MultiplayerSessions { get; set; } = null!;
 
     // Associations
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,20 +34,6 @@ public class MariaDbContext : DbContext
             .HasOne(i => i.Item)
             .WithMany(i => i.Inventories)
             .HasForeignKey(i => i.ItemId);
-
-        // Singleplayer session
-
-        // Linking Player with Singleplayer sessions
-        modelBuilder.Entity<SingleplayerSession>()
-            .HasOne(ss => ss.Player)
-            .WithMany(p => p.SingleplayerSessions)
-            .HasForeignKey(ss => ss.PlayerId);
-
-        // Linking Singleplayer games with Singleplayer sessions
-        modelBuilder.Entity<SingleplayerSession>()
-            .HasOne(ss => ss.SingleplayerGame)
-            .WithMany(sg => sg.SingleplayerSessions)
-            .HasForeignKey(ss => ss.SingleplayerGameId);
 
         // Multiplayer session
 

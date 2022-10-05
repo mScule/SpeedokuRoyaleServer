@@ -1,5 +1,7 @@
 namespace SpeedokuRoyaleServer.Models;
 
 public class SingleplayerGame : Game {
-    public virtual ICollection<SingleplayerSession>? SingleplayerSessions { get; set; }
+    public ulong Score    { get; set; }
+    public ulong PlayerId { get; set; }
+    public Player? Player { get; set; }
 }

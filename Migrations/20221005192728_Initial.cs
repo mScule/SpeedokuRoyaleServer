@@ -59,19 +59,6 @@ namespace SpeedokuRoyaleServer.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "SingleplayerGames",
-                columns: table => new
-                {
-                    Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SingleplayerGames", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "TodoItems",
                 columns: table => new
                 {
@@ -143,27 +130,21 @@ namespace SpeedokuRoyaleServer.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "SingleplayerSessions",
+                name: "SingleplayerGames",
                 columns: table => new
                 {
                     Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    SingleplayerGameId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    Score = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     PlayerId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SingleplayerSessions", x => x.Id);
+                    table.PrimaryKey("PK_SingleplayerGames", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SingleplayerSessions_Players_PlayerId",
+                        name: "FK_SingleplayerGames_Players_PlayerId",
                         column: x => x.PlayerId,
                         principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SingleplayerSessions_SingleplayerGames_SingleplayerGameId",
-                        column: x => x.SingleplayerGameId,
-                        principalTable: "SingleplayerGames",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -190,14 +171,9 @@ namespace SpeedokuRoyaleServer.Migrations
                 column: "PlayerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SingleplayerSessions_PlayerId",
-                table: "SingleplayerSessions",
+                name: "IX_SingleplayerGames_PlayerId",
+                table: "SingleplayerGames",
                 column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SingleplayerSessions_SingleplayerGameId",
-                table: "SingleplayerSessions",
-                column: "SingleplayerGameId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -209,7 +185,7 @@ namespace SpeedokuRoyaleServer.Migrations
                 name: "MultiplayerSessions");
 
             migrationBuilder.DropTable(
-                name: "SingleplayerSessions");
+                name: "SingleplayerGames");
 
             migrationBuilder.DropTable(
                 name: "TodoItems");
@@ -222,9 +198,6 @@ namespace SpeedokuRoyaleServer.Migrations
 
             migrationBuilder.DropTable(
                 name: "Players");
-
-            migrationBuilder.DropTable(
-                name: "SingleplayerGames");
         }
     }
 }

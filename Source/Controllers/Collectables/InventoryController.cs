@@ -32,8 +32,6 @@ public class InventoryController : ControllerBase {
             ItemId   = itemId
         };
 
-        Console.WriteLine("INVENTORY::::: " + inventory);
-
         await inventoryService.Create(inventory);
         if (inventory.Id != default)
             return CreatedAtRoute(

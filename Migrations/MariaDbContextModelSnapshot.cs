@@ -118,30 +118,17 @@ namespace SpeedokuRoyaleServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint unsigned");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("SingleplayerGames");
-                });
-
-            modelBuilder.Entity("SpeedokuRoyaleServer.Models.SingleplayerSession", b =>
-                {
-                    b.Property<ulong?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint unsigned");
-
                     b.Property<ulong>("PlayerId")
                         .HasColumnType("bigint unsigned");
 
-                    b.Property<ulong>("SingleplayerGameId")
+                    b.Property<ulong>("Score")
                         .HasColumnType("bigint unsigned");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PlayerId");
 
-                    b.HasIndex("SingleplayerGameId");
-
-                    b.ToTable("SingleplayerSessions");
+                    b.ToTable("SingleplayerGames");
                 });
 
             modelBuilder.Entity("SpeedokuRoyaleServer.Models.TodoItem", b =>
@@ -200,23 +187,15 @@ namespace SpeedokuRoyaleServer.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("SpeedokuRoyaleServer.Models.SingleplayerSession", b =>
+            modelBuilder.Entity("SpeedokuRoyaleServer.Models.SingleplayerGame", b =>
                 {
                     b.HasOne("SpeedokuRoyaleServer.Models.Player", "Player")
-                        .WithMany("SingleplayerSessions")
+                        .WithMany("SingleplayerGame")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SpeedokuRoyaleServer.Models.SingleplayerGame", "SingleplayerGame")
-                        .WithMany("SingleplayerSessions")
-                        .HasForeignKey("SingleplayerGameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Player");
-
-                    b.Navigation("SingleplayerGame");
                 });
 
             modelBuilder.Entity("SpeedokuRoyaleServer.Models.Item", b =>
@@ -235,12 +214,7 @@ namespace SpeedokuRoyaleServer.Migrations
 
                     b.Navigation("MultiplayerSessions");
 
-                    b.Navigation("SingleplayerSessions");
-                });
-
-            modelBuilder.Entity("SpeedokuRoyaleServer.Models.SingleplayerGame", b =>
-                {
-                    b.Navigation("SingleplayerSessions");
+                    b.Navigation("SingleplayerGame");
                 });
 #pragma warning restore 612, 618
         }

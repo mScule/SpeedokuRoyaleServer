@@ -11,7 +11,16 @@ public class Player : Indexed
     [Required]
     public string? Password { get; set; }
 
-    public virtual ICollection<Inventory>? Inventories { get; set; }
-    public virtual ICollection<SingleplayerSession>? SingleplayerSessions { get; set; }
-    public virtual ICollection<MultiplayerSession>?  MultiplayerSessions  { get; set; }
+    public virtual ICollection<Inventory>? Inventories
+    {
+        get; set;
+    }
+    public virtual ICollection<SingleplayerGame>? SingleplayerGame
+    {
+        get; set;
+    }
+    public virtual ICollection<MultiplayerSession>? MultiplayerSessions
+    {
+        get; set;
+    }
 }

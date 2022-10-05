@@ -18,6 +18,11 @@ builder.Services.AddScoped<PlayerService>();
 builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<InventoryService>();
 
+builder.Services.AddScoped<MultiplayerSessionService>();
+builder.Services.AddScoped<MultiplayerGameService>();
+builder.Services.AddScoped<SingleplayerGameService>();
+
+
 // Controllers
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = 
