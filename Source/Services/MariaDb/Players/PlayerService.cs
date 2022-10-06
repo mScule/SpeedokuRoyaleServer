@@ -10,6 +10,16 @@ public sealed class PlayerService
     public PlayerService(MariaDbContext dbContext) =>
         this.dbContext = dbContext;
 
+    public async Task<ulong?> Login(Player player)
+    {
+        Player? result = await dbContext.Players
+            .FirstOrDefaultAsync(
+                p => p.Email == player.Email &&
+                p.Password == player.Password
+            );
+        return result != null ? result.Id : default;
+    }
+
     // Create
     public async Task<ulong?> Create(Player player)
     {

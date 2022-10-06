@@ -21,6 +21,18 @@ public class PlayerController : ControllerBase
         this.playerService = playerService;
     }
 
+    // Login
+    [HttpPost("Login")]
+    public async Task<ActionResult<ulong>> Login([FromBody]Player player)
+    {
+        ulong? id = await playerService.Login(player);
+
+        if(id != default)
+            return Ok(id);
+        else
+            return NotFound();
+    }
+
     // Create
     [HttpPost]
     public async Task<ActionResult<Player>> Post([FromBody]Player player)
