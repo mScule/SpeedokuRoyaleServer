@@ -23,11 +23,15 @@ public class PlayerController : ControllerBase
 
     // Login
     [HttpPost("Login")]
-    public async Task<ActionResult<ulong>> Login([FromBody]Player player)
+    public async Task<ActionResult<ulong>> Login([FromBody] LoginData data)
     {
-        ulong? id = await playerService.Login(player);
+        ulong? id = await playerService.Login(new Player
+        {
+            Name     = data.UserName,
+            Password = data.Password
+        });
 
-        if(id != default)
+        if (id != default)
             return Ok(id);
         else
             return NotFound();
@@ -35,15 +39,18 @@ public class PlayerController : ControllerBase
 
     // Create
     [HttpPost]
-    public async Task<ActionResult<Player>> Post([FromBody]Player player)
+    public async Task<ActionResult<ulong>> Post([FromBody] RegisterationData data)
     {
+        Player player = new Player
+        {
+            Name     = data.UserName,
+            Password = data.Password,
+            Email    = data.Email
+        };
+
         await playerService.Create(player);
-        if (player.Id != default)
-            return CreatedAtRoute(
-                "FindOnePlayer",
-                new { id = player.Id },
-                player
-            );
+        if (player.Id != default && player.Id != null)
+            return player.Id;
         else
             return BadRequest();
     }

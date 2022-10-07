@@ -14,7 +14,7 @@ public sealed class PlayerService
     {
         Player? result = await dbContext.Players
             .FirstOrDefaultAsync(
-                p => p.Email == player.Email &&
+                p => p.Name == player.Name &&
                 p.Password == player.Password
             );
         return result != null ? result.Id : default;
