@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SpeedokuRoyaleServer.Models;
-using SpeedokuRoyaleServer.Models.Services;
+using SpeedokuRoyaleServer.Models.Services.MariaDB;
 
 namespace SpeedokuRoyaleServer.Controllers;
 
@@ -9,12 +9,12 @@ namespace SpeedokuRoyaleServer.Controllers;
 public class TodoController : ControllerBase
 {
     private readonly ILogger<TodoController> logger;
-    private readonly MariaDbTodoService todoService;
+    private readonly TodoService todoService;
 
     public TodoController
     (
         ILogger<TodoController> logger,
-        MariaDbTodoService todoService
+        TodoService todoService
     )
     {
         this.logger = logger;
@@ -30,7 +30,7 @@ public class TodoController : ControllerBase
         await todoService.Create(todoItem);
         if (todoItem.Id != default)
             return CreatedAtRoute(
-                "FindOne",
+                "FindOneTodoItem",
                 new { id = todoItem.Id },
                 todoItem
             );
@@ -39,8 +39,8 @@ public class TodoController : ControllerBase
     }
 
     // Read
-    [HttpGet("{id}", Name = "FindOne")]
-    public async Task<ActionResult<TodoItem>> Get(long id)
+    [HttpGet("{id}", Name = "FindOneTodoItem")]
+    public async Task<ActionResult<TodoItem>> Get(ulong id)
     {
         var result = await todoService.FindOne(id);
         if (result != default)
@@ -69,7 +69,7 @@ public class TodoController : ControllerBase
 
     // Delete
     [HttpDelete]
-    public async Task<ActionResult<TodoItem>> Delete(long id)
+    public async Task<ActionResult<TodoItem>> Delete(ulong id)
     {
         var result = await todoService.Delete(id);
         if (result > 0)

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SpeedokuRoyaleServer.Models.DbContexts;
-using SpeedokuRoyaleServer.Models.Services;
+using SpeedokuRoyaleServer.Models.Services.MariaDB;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -10,11 +10,24 @@ builder.Services.AddDbContext<MariaDbContext>(options => options.UseMySql(
     new MariaDbServerVersion(new Version(10,7,3))
 ));
 
-// Services
-builder.Services.AddScoped<MariaDbTodoService>();
+// Example services
+builder.Services.AddScoped<TodoService>();
+
+// Speedoku royale server services
+builder.Services.AddScoped<PlayerService>();
+builder.Services.AddScoped<ItemService>();
+builder.Services.AddScoped<InventoryService>();
+
+builder.Services.AddScoped<MultiplayerSessionService>();
+builder.Services.AddScoped<MultiplayerGameService>();
+builder.Services.AddScoped<SingleplayerGameService>();
+
 
 // Controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = 
+        System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
+);
 
 // Learn more about configuring Swagger/OpenAPI at
 // https://aka.ms/aspnetcore/swashbuckle
@@ -30,7 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
+// app.UseHttpsRedirection();
+// app.UseAuthorization();
 app.MapControllers();
 app.Run();
