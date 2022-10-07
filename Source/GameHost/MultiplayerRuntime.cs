@@ -1,20 +1,26 @@
-using System.Collections.Generic;
 using SpeedokuRoyaleServer.Models.Services.MariaDB;
 
 namespace SpeedokuRoyaleServer.GameHost;
 
 public class MultiplayerRuntime
 {
-    private static readonly int GameLength = 2;
+    // Config
+    public string RoomName   { set; get; } = "";
+    public int    GameLength { set; get; } = 2;
+    public byte   RoomSize   { set; get; } = 0;
 
-    public string RoomName { set; get; } = "";
-    public byte RoomSize { set; get; } = 0;
-
+    // State
     public RuntimeState State { set; get; } = RuntimeState.WaitingForPlayers;
-    private DateTime? endTime = null;
 
+    // Runtime
+    private DateTime? startTime = null, endTime = null;
     private List<ulong> players = new List<ulong>();
     private Dictionary<ulong, ulong> scores = new Dictionary<ulong, ulong>();
+
+    public DateTime? StartTime { get => startTime; }
+    public KeyValuePair<ulong, ulong>[] Scores {
+        get => scores.ToArray<KeyValuePair<ulong,ulong>>();
+    }
 
     public int PlayerAmt()
     {
@@ -30,6 +36,13 @@ public class MultiplayerRuntime
         return false;
     }
 
+    public void ClearRoom() {
+        Console.WriteLine($"Clearing room {RoomName}");
+        this.players.Clear();
+        this.scores.Clear();
+        this.State = RuntimeState.WaitingForPlayers;
+    }
+
     public void AddPlayer(ulong playerId)
     {
         this.players.Add(playerId);
@@ -38,6 +51,8 @@ public class MultiplayerRuntime
 
         if (this.players.Count >= RoomSize)
         {
+            this.startTime = new DateTime(DateTime.Now.Ticks);
+
             Console.WriteLine($"Game starts in room {RoomName}");
             this.State = RuntimeState.InGame;
             this.endTime = new DateTime(DateTime.Now.Ticks).AddMinutes(GameLength);

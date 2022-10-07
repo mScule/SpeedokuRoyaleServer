@@ -32,11 +32,16 @@ public sealed class PlayerService
     public async Task<IEnumerable<Player>> FindAll() =>
         await dbContext.Players
             .Include(p => p.Inventories)
+            .Include(p => p.SingleplayerGame)
+            .Include(p => p.MultiplayerSessions)
             .ToListAsync();
 
     public async Task<Player?> FindOne(ulong id)
     {
         Player? result = await dbContext.Players
+            .Include(p => p.Inventories)
+            .Include(p => p.SingleplayerGame)
+            .Include(p => p.MultiplayerSessions)
             .FirstOrDefaultAsync(token => token.Id == id);
 
         return result;

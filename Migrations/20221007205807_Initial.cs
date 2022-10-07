@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -31,7 +32,8 @@ namespace SpeedokuRoyaleServer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -107,7 +109,7 @@ namespace SpeedokuRoyaleServer.Migrations
                 {
                     Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Score = table.Column<uint>(type: "int unsigned", nullable: false),
+                    Score = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     MultiplayerGameId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
                     PlayerId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                 },
@@ -136,7 +138,8 @@ namespace SpeedokuRoyaleServer.Migrations
                     Id = table.Column<ulong>(type: "bigint unsigned", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Score = table.Column<ulong>(type: "bigint unsigned", nullable: false),
-                    PlayerId = table.Column<ulong>(type: "bigint unsigned", nullable: false)
+                    PlayerId = table.Column<ulong>(type: "bigint unsigned", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {

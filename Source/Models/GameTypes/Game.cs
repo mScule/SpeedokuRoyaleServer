@@ -2,6 +2,5 @@ namespace SpeedokuRoyaleServer.Models;
 
 public class Game : Indexed
 {
-    DateTime StartTime { get; set; }
-    uint Duration { get; set; }
+    public DateTime? Date { get; set; }
 }

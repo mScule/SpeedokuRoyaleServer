@@ -2,7 +2,7 @@ namespace SpeedokuRoyaleServer.Models;
 
 public class MultiplayerSession : Indexed
 {
-    public uint Score { get; set; }
+    public ulong Score { get; set; }
 
     public ulong MultiplayerGameId { get; set; }
     public MultiplayerGame? MultiplayerGame { get; set; }

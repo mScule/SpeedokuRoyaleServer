@@ -60,6 +60,9 @@ namespace SpeedokuRoyaleServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint unsigned");
 
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("Id");
 
                     b.ToTable("MultiplayerGames");
@@ -77,8 +80,8 @@ namespace SpeedokuRoyaleServer.Migrations
                     b.Property<ulong>("PlayerId")
                         .HasColumnType("bigint unsigned");
 
-                    b.Property<uint>("Score")
-                        .HasColumnType("int unsigned");
+                    b.Property<ulong>("Score")
+                        .HasColumnType("bigint unsigned");
 
                     b.HasKey("Id");
 
@@ -117,6 +120,9 @@ namespace SpeedokuRoyaleServer.Migrations
                     b.Property<ulong?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint unsigned");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<ulong>("PlayerId")
                         .HasColumnType("bigint unsigned");
