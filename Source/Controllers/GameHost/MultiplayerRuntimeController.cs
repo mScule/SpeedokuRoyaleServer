@@ -11,6 +11,9 @@ namespace SpeedokuRoyaleServer.Controllers;
 [Route("[controller]")]
 public class MultiplayerRuntimeController : ControllerBase
 {
+    private static readonly int GeneralGameLength = 2;
+    private static readonly byte GeneralRoomSize = 3;
+
     private readonly ILogger<MultiplayerRuntimeController> logger;
 
     private readonly MultiplayerSessionService multiplayerSessionService;
@@ -34,24 +37,28 @@ public class MultiplayerRuntimeController : ControllerBase
         this.multiplayerGameService    = multiplayerGameService;
         this.playerService             = playerService;
         this.itemService               = itemService;
+
+        foreach(MultiplayerRuntime room in gameRooms) {
+            room.Logger = this.logger;
+        }
     }
 
     // Gamerooms are being hardcoded for now...
     private static MultiplayerRuntime[] gameRooms = new MultiplayerRuntime[] {
         new MultiplayerRuntime {
             RoomName   = IdGenerator.NewId(),
-            RoomSize   = 2,
-            GameLength = 1
+            RoomSize   = GeneralRoomSize,
+            GameLength = GeneralGameLength
         },
         new MultiplayerRuntime {
             RoomName   = IdGenerator.NewId(),
-            RoomSize   = 2,
-            GameLength = 1
+            RoomSize   = GeneralRoomSize,
+            GameLength = GeneralGameLength
         },
         new MultiplayerRuntime {
             RoomName   = IdGenerator.NewId(),
-            RoomSize   = 2,
-            GameLength = 1
+            RoomSize   = GeneralRoomSize,
+            GameLength = GeneralGameLength
         },
     };
 
@@ -65,13 +72,18 @@ public class MultiplayerRuntimeController : ControllerBase
         if (winner != null)
         {
             // TODO: Add random price for the player
-            Console.WriteLine("Add Item for winner for the winner...");
+            logger.LogInformation("Add Item for winner for the winner...");
         }
 
         closedGames.Add(gameRoom.RoomName + "");
         gameRoom.ClearRoom();
 
-        Console.WriteLine("Closed games..." + closedGames);
+        // Showing closed games
+        string closedGamesInfo = "Closed games:\n";
+        foreach(string game in closedGames)
+            closedGamesInfo += game + "\n";
+
+        this.logger.LogInformation(closedGamesInfo);
     }
 
     [HttpPost("{roomName}/Join")]
@@ -209,7 +221,7 @@ public class MultiplayerRuntimeController : ControllerBase
                 gameInfo = new GameInfo
                 {
                     State = room.State,
-                    Players = room.PlayerInfo()
+                    Players = room.ScoreInfo()
                 };
 
                 found = true;

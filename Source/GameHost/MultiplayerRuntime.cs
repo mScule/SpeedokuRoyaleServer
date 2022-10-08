@@ -1,9 +1,13 @@
 using SpeedokuRoyaleServer.Utility;
+using SpeedokuRoyaleServer.Models;
+using SpeedokuRoyaleServer.Controllers;
 
 namespace SpeedokuRoyaleServer.GameHost;
 
 public class MultiplayerRuntime
 {
+    public ILogger<MultiplayerRuntimeController>? Logger { get; set; }
+
     // Config
     public string RoomName   { set; get; } = "";
     public int    GameLength { set; get; } = 2;
@@ -25,15 +29,28 @@ public class MultiplayerRuntime
     public ulong? Winner { get; set; } = null;
 
     // Methods
+    private void Log(string msg)
+    {
+        if (Logger != null)
+            Logger.LogInformation(msg);
+    }
+
     public int PlayerAmt() => players.Count;
 
-    public Tuple<ulong, ulong>[] PlayerInfo()
+    public ScoreData[] ScoreInfo()
     {
-        List<Tuple<ulong, ulong>> info = new List<Tuple<ulong, ulong>>();
+        List<ScoreData> info = new List<ScoreData>();
 
         if (this.State == RuntimeState.InGame)
+        {
             foreach(ulong player in players)
-                info.Add(new Tuple<ulong, ulong>(player, scores[player]));
+            {
+                info.Add(
+                    new ScoreData
+                    { PlayerId = player, Score = scores[player] }
+                );
+            }
+        }
 
         return info.ToArray();
     }
@@ -46,7 +63,7 @@ public class MultiplayerRuntime
     }
 
     public void ClearRoom() {
-        Console.WriteLine($"Clearing room {RoomName}");
+        Log($"Clearing room {RoomName}");
         this.players.Clear();
         this.scores.Clear();
 
@@ -58,13 +75,13 @@ public class MultiplayerRuntime
     {
         this.players.Add(playerId);
 
-        Console.WriteLine($"Player {playerId} joined room {RoomName}!");
+        Log($"Player {playerId} joined room {RoomName}!");
 
         if (this.players.Count >= RoomSize)
         {
             this.startTime = new DateTime(DateTime.Now.Ticks);
 
-            Console.WriteLine($"Game starts in room {RoomName}");
+            Log($"Game starts in room {RoomName}");
             this.State = RuntimeState.InGame;
             this.endTime =
                 new DateTime(DateTime.Now.Ticks).AddMinutes(GameLength);
@@ -91,7 +108,7 @@ public class MultiplayerRuntime
             }
         }
 
-        Console.WriteLine
+        Log
         (
             $"Gameroom {RoomName} game ended. Winner playerid: {winner}"
         );
@@ -104,7 +121,7 @@ public class MultiplayerRuntime
     {
         now = new DateTime(DateTime.Now.Ticks);
         TimeSpan? timeLeft = endTime - now;
-        Console.WriteLine($"Time remaining {timeLeft} for room {RoomName}");
+        Log($"Time remaining {timeLeft} for room {RoomName}");
 
         if (now >= this.endTime)
             FinishGame();

@@ -7,9 +7,6 @@ public class MariaDbContext : DbContext
     public MariaDbContext(DbContextOptions options)
         : base(options) { }
 
-    // Example Model
-    public DbSet<TodoItem> TodoItems { get; set; } = null!;
-
     // Speedoku Royale Models
     public DbSet<Player>              Players             { get; set; } = null!;
     public DbSet<Item>                Items               { get; set; } = null!;
@@ -21,6 +18,13 @@ public class MariaDbContext : DbContext
     // Associations
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Player
+        modelBuilder.Entity<Player>()
+            .HasIndex(p => p.Email).IsUnique();
+
+        modelBuilder.Entity<Player>()
+            .HasIndex(p => p.Name).IsUnique();
+
         // Inventory
 
         // Linking Player with Inventory

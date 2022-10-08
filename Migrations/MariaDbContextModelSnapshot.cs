@@ -100,17 +100,23 @@ namespace SpeedokuRoyaleServer.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Players");
                 });
@@ -135,24 +141,6 @@ namespace SpeedokuRoyaleServer.Migrations
                     b.HasIndex("PlayerId");
 
                     b.ToTable("SingleplayerGames");
-                });
-
-            modelBuilder.Entity("SpeedokuRoyaleServer.Models.TodoItem", b =>
-                {
-                    b.Property<ulong?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<bool>("IsComplete")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Task")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TodoItems");
                 });
 
             modelBuilder.Entity("SpeedokuRoyaleServer.Models.Inventory", b =>
