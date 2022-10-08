@@ -10,10 +10,7 @@ builder.Services.AddDbContext<MariaDbContext>(options => options.UseMySql(
     new MariaDbServerVersion(new Version(10,7,3))
 ));
 
-// Example services
-builder.Services.AddScoped<TodoService>();
-
-// Speedoku royale server services
+// Services
 builder.Services.AddScoped<PlayerService>();
 builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<InventoryService>();
