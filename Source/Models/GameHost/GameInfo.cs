@@ -2,7 +2,6 @@ namespace SpeedokuRoyaleServer.Models;
 
 public class GameInfo
 {
-    public Player[]? Players { get; set; } = null;
-    public KeyValuePair<ulong, ulong>[]? Scores { get; set; } = null;
-    
+    public RuntimeState State { get; set; }
+    public Tuple<ulong, ulong>[]? Players { get; set; } = null;
 }

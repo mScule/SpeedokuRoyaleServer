@@ -115,25 +115,26 @@ public class MultiplayerRuntimeController : ControllerBase
 
                 if (room.State == RuntimeState.Finished)
                 {
-                            // Adding game
-        ulong? gameId = await multiplayerGameService.Create
-        (
-            new MultiplayerGame { Date = room.StartTime }
-        );
+                    // Adding game
+                    ulong? gameId = await multiplayerGameService.Create
+                    (
+                        new MultiplayerGame { Date = room.StartTime }
+                    );
 
-        // Adding scores to players
-        foreach (KeyValuePair<ulong, ulong> player in room.Scores)
-        {
-            await multiplayerSessionService.Create
-            (
-                new MultiplayerSession
-                {
-                    MultiplayerGameId = (ulong)gameId,
-                    PlayerId = player.Key,
-                    Score = player.Value
-                }
-            );
-        }
+                    // Adding scores to players
+                    foreach (KeyValuePair<ulong, ulong> player in room.Scores)
+                    {
+                        await multiplayerSessionService.Create
+                        (
+                            new MultiplayerSession
+                            {
+                                MultiplayerGameId = (ulong)gameId,
+                                PlayerId = player.Key,
+                                Score = player.Value
+                            }
+                        );
+                    }
+
                     EndGame(room);
                     break;
                 }
@@ -161,6 +162,79 @@ public class MultiplayerRuntimeController : ControllerBase
 
         if (found)
             return Ok(state);
+        else
+            return NotFound();
+    }
+
+    [HttpGet("{roomName}/InGameStatus")]
+    public async Task<ActionResult<GameInfo>> InGameStatus(string roomName)
+    {
+        bool found = false;
+
+        GameInfo? gameInfo = null;
+
+        foreach(MultiplayerRuntime room in gameRooms)
+        {
+            if (room.State == RuntimeState.InGame)
+                    room.UpdateTimer();
+
+            if (room.State == RuntimeState.Finished)
+            {
+                // Adding game
+                ulong? gameId = await multiplayerGameService.Create
+                (
+                    new MultiplayerGame { Date = room.StartTime }
+                );
+
+                // Adding scores to players
+                foreach (KeyValuePair<ulong, ulong> player in room.Scores)
+                {
+                    await multiplayerSessionService.Create
+                    (
+                        new MultiplayerSession
+                        {
+                            MultiplayerGameId = (ulong)gameId,
+                            PlayerId = player.Key,
+                            Score = player.Value
+                        }
+                    );
+                }
+
+                EndGame(room);
+                break;
+            }
+
+            if (room.RoomName == roomName && room.State == RuntimeState.InGame)
+            {
+                gameInfo = new GameInfo
+                {
+                    State = room.State,
+                    Players = room.PlayerInfo()
+                };
+
+                found = true;
+                break;
+            }
+        }
+
+        // Trying to find the room from the closed ones...
+        if (!found)
+        {
+            foreach (string name in closedGames) {
+                if (roomName == name) {
+                    gameInfo = new GameInfo
+                    {
+                        Players = null,
+                        State = RuntimeState.Closed
+                    };
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (found && gameInfo != null)
+            return Ok(gameInfo);
         else
             return NotFound();
     }
@@ -198,25 +272,26 @@ public class MultiplayerRuntimeController : ControllerBase
                     room.StartTime != null
                 )
                 {
-                            // Adding game
-        ulong? gameId = await multiplayerGameService.Create
-        (
-            new MultiplayerGame { Date = room.StartTime }
-        );
+                    // Adding game
+                    ulong? gameId = await multiplayerGameService.Create
+                    (
+                        new MultiplayerGame { Date = room.StartTime }
+                    );
 
-        // Adding scores to players
-        foreach (KeyValuePair<ulong, ulong> player in room.Scores)
-        {
-            await multiplayerSessionService.Create
-            (
-                new MultiplayerSession
-                {
-                    MultiplayerGameId = (ulong)gameId,
-                    PlayerId = player.Key,
-                    Score = player.Value
-                }
-            );
-        }
+                    // Adding scores to players
+                    foreach (KeyValuePair<ulong, ulong> player in room.Scores)
+                    {
+                        await multiplayerSessionService.Create
+                        (
+                            new MultiplayerSession
+                            {
+                                MultiplayerGameId = (ulong)gameId,
+                                PlayerId = player.Key,
+                                Score = player.Value
+                            }
+                        );
+                    }
+
                     EndGame(room);
                 }
             }
