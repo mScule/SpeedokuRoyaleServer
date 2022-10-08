@@ -25,13 +25,15 @@ public class SingleplayerGameController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<SingleplayerGame>> Post
     (
+        DateTime date,
         ulong score,
         ulong playerId
     )
     {
         SingleplayerGame game = new SingleplayerGame
         {
-            Score = score,
+            Date     = date,
+            Score    = score,
             PlayerId = playerId
         };
 

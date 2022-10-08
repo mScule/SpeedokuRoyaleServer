@@ -1,5 +1,6 @@
 public enum RuntimeState {
     WaitingForPlayers,
     InGame,
-    Finished
+    Finished,
+    Closed
 }

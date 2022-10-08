@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SpeedokuRoyaleServer.GameHost;
 using SpeedokuRoyaleServer.Models.Services.MariaDB;
 using SpeedokuRoyaleServer.Models;
+using SpeedokuRoyaleServer.Utility;
 
 namespace SpeedokuRoyaleServer.Controllers;
 
@@ -15,6 +16,7 @@ public class MultiplayerRuntimeController : ControllerBase
     private readonly MultiplayerSessionService multiplayerSessionService;
     private readonly MultiplayerGameService multiplayerGameService;
     private readonly PlayerService playerService;
+    private readonly ItemService itemService;
 
     public MultiplayerRuntimeController
     (
@@ -22,34 +24,55 @@ public class MultiplayerRuntimeController : ControllerBase
 
         MultiplayerSessionService multiplayerSessionService,
         MultiplayerGameService multiplayerGameService,
-        PlayerService playerService
+        PlayerService playerService,
+        ItemService itemService
     )
     {
         this.logger = logger;
 
         this.multiplayerSessionService = multiplayerSessionService;
-        this.multiplayerGameService = multiplayerGameService;
-        this.playerService = playerService;
+        this.multiplayerGameService    = multiplayerGameService;
+        this.playerService             = playerService;
+        this.itemService               = itemService;
     }
 
     // Gamerooms are being hardcoded for now...
     private static MultiplayerRuntime[] gameRooms = new MultiplayerRuntime[] {
         new MultiplayerRuntime {
-            RoomName   = "Room1",
+            RoomName   = IdGenerator.NewId(),
             RoomSize   = 2,
-            GameLength = 3
+            GameLength = 1
         },
         new MultiplayerRuntime {
-            RoomName   = "Room2",
+            RoomName   = IdGenerator.NewId(),
             RoomSize   = 2,
-            GameLength = 3
+            GameLength = 1
         },
-         new MultiplayerRuntime {
-            RoomName   = "Room3",
+        new MultiplayerRuntime {
+            RoomName   = IdGenerator.NewId(),
             RoomSize   = 2,
-            GameLength = 3
+            GameLength = 1
         },
     };
+
+    private static List<string> closedGames = new List<string>();
+
+    private void EndGame(MultiplayerRuntime gameRoom)
+    {
+        ulong? winner = gameRoom.Winner;
+
+        // Giving price for the winner
+        if (winner != null)
+        {
+            // TODO: Add random price for the player
+            Console.WriteLine("Add Item for winner for the winner...");
+        }
+
+        closedGames.Add(gameRoom.RoomName + "");
+        gameRoom.ClearRoom();
+
+        Console.WriteLine("Closed games..." + closedGames);
+    }
 
     [HttpPost("{roomName}/Join")]
     public async Task<ActionResult<bool>> Join(ulong playerId, string roomName)
@@ -82,10 +105,39 @@ public class MultiplayerRuntimeController : ControllerBase
         RuntimeState state = RuntimeState.WaitingForPlayers;
         bool found = false;
 
-        await Task.Run(() =>
+        await Task.Run(async () =>
         {
+            // Trying to find the room from active ones...
             foreach (MultiplayerRuntime room in gameRooms)
             {
+                if (room.State == RuntimeState.InGame)
+                    room.UpdateTimer();
+
+                if (room.State == RuntimeState.Finished)
+                {
+                            // Adding game
+        ulong? gameId = await multiplayerGameService.Create
+        (
+            new MultiplayerGame { Date = room.StartTime }
+        );
+
+        // Adding scores to players
+        foreach (KeyValuePair<ulong, ulong> player in room.Scores)
+        {
+            await multiplayerSessionService.Create
+            (
+                new MultiplayerSession
+                {
+                    MultiplayerGameId = (ulong)gameId,
+                    PlayerId = player.Key,
+                    Score = player.Value
+                }
+            );
+        }
+                    EndGame(room);
+                    break;
+                }
+
                 if (room.RoomName == roomName)
                 {
                     state = room.State;
@@ -93,67 +145,79 @@ public class MultiplayerRuntimeController : ControllerBase
                     break;
                 }
             }
+
+            // Trying to find the room from the closed ones...
+            if (!found)
+            {
+                foreach (string name in closedGames) {
+                    if (roomName == name) {
+                        state = RuntimeState.Closed;
+                        found = true;
+                        break;
+                    }
+                }
+            }
         });
 
         if (found)
-        {
             return Ok(state);
-        }
         else
-        {
             return NotFound();
-        }
     }
 
     [HttpPost("{roomName}/AddScore")]
     public async Task<ActionResult<bool>> AddScore
     (
         ulong  playerId,
+        ulong  scores,
         string roomName
     )
     {
         bool scoreAddedSuccessfully = false;
 
-        await Task.Run(async () =>
+        await Task.Run(async() =>
         {
             foreach (MultiplayerRuntime room in gameRooms)
             {
                 if
                 (
                     room.RoomName == roomName &&
-                    room.HasPlayer(playerId) &&
+                    room.HasPlayer(playerId)  &&
                     room.State == RuntimeState.InGame
                 )
                 {
-                    room.AddScore(playerId);
+                    room.AddScore(playerId, scores);
                     scoreAddedSuccessfully = true;
                     break;
                 }
-                else if
+
+                if
                 (
                     room.RoomName == roomName &&
                     room.State == RuntimeState.Finished &&
                     room.StartTime != null
                 )
                 {
-                    ulong? gameId = await multiplayerGameService.Create
-                    (
-                        new MultiplayerGame { Date = room.StartTime }
-                    );
+                            // Adding game
+        ulong? gameId = await multiplayerGameService.Create
+        (
+            new MultiplayerGame { Date = room.StartTime }
+        );
 
-                    foreach (KeyValuePair<ulong, ulong> player in room.Scores)
-                    {
-                        await multiplayerSessionService.Create
-                        (
-                            new MultiplayerSession
-                            {
-                                MultiplayerGameId = (ulong)gameId,
-                                PlayerId = player.Key,
-                                Score = player.Value
-                            }
-                        );
-                    }
-                    room.ClearRoom();
+        // Adding scores to players
+        foreach (KeyValuePair<ulong, ulong> player in room.Scores)
+        {
+            await multiplayerSessionService.Create
+            (
+                new MultiplayerSession
+                {
+                    MultiplayerGameId = (ulong)gameId,
+                    PlayerId = player.Key,
+                    Score = player.Value
+                }
+            );
+        }
+                    EndGame(room);
                 }
             }
         });
@@ -174,9 +238,10 @@ public class MultiplayerRuntimeController : ControllerBase
                 {
                     avaliableRooms.Add(new RoomInfo
                     {
-                        Name = room.RoomName,
+                        Name    = room.RoomName,
                         Players = room.PlayerAmt(),
-                        Size = room.RoomSize
+                        Size    = room.RoomSize,
+                        State   = room.State
                     });
                 }
             }
