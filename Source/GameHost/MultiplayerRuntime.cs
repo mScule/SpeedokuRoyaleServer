@@ -27,6 +27,17 @@ public class MultiplayerRuntime
     // Methods
     public int PlayerAmt() => players.Count;
 
+    public Tuple<ulong, ulong>[] PlayerInfo()
+    {
+        List<Tuple<ulong, ulong>> info = new List<Tuple<ulong, ulong>>();
+
+        if (this.State == RuntimeState.InGame)
+            foreach(ulong player in players)
+                info.Add(new Tuple<ulong, ulong>(player, scores[player]));
+
+        return info.ToArray();
+    }
+
     public bool HasPlayer(ulong playerId) {
         foreach (ulong id in players)
             if (playerId == id)
@@ -55,7 +66,8 @@ public class MultiplayerRuntime
 
             Console.WriteLine($"Game starts in room {RoomName}");
             this.State = RuntimeState.InGame;
-            this.endTime = new DateTime(DateTime.Now.Ticks).AddMinutes(GameLength);
+            this.endTime =
+                new DateTime(DateTime.Now.Ticks).AddMinutes(GameLength);
 
             foreach(ulong id in players)
             {
@@ -103,8 +115,6 @@ public class MultiplayerRuntime
         UpdateTimer();
 
         if (now < this.endTime)
-        {
             this.scores[playerId] += amt;
-        }
     }
 }
