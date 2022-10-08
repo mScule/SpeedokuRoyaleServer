@@ -209,7 +209,7 @@ public class MultiplayerRuntimeController : ControllerBase
                 gameInfo = new GameInfo
                 {
                     State = room.State,
-                    Players = room.PlayerInfo()
+                    Players = room.ScoreInfo()
                 };
 
                 found = true;

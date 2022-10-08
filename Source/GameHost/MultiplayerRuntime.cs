@@ -1,4 +1,5 @@
 using SpeedokuRoyaleServer.Utility;
+using SpeedokuRoyaleServer.Models;
 
 namespace SpeedokuRoyaleServer.GameHost;
 
@@ -27,13 +28,20 @@ public class MultiplayerRuntime
     // Methods
     public int PlayerAmt() => players.Count;
 
-    public Tuple<ulong, ulong>[] PlayerInfo()
+    public ScoreData[] ScoreInfo()
     {
-        List<Tuple<ulong, ulong>> info = new List<Tuple<ulong, ulong>>();
+        List<ScoreData> info = new List<ScoreData>();
 
         if (this.State == RuntimeState.InGame)
+        {
             foreach(ulong player in players)
-                info.Add(new Tuple<ulong, ulong>(player, scores[player]));
+            {
+                info.Add(
+                    new ScoreData
+                    { PlayerId = player, Score = scores[player] }
+                );
+            }
+        }
 
         return info.ToArray();
     }
