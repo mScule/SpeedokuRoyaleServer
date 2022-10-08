@@ -22,7 +22,6 @@ builder.Services.AddScoped<MultiplayerSessionService>();
 builder.Services.AddScoped<MultiplayerGameService>();
 builder.Services.AddScoped<SingleplayerGameService>();
 
-
 // Controllers
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = 
@@ -43,7 +42,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// TODO: Https, User authorization
 // app.UseHttpsRedirection();
 // app.UseAuthorization();
+
 app.MapControllers();
 app.Run();

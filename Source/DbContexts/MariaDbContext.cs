@@ -21,6 +21,13 @@ public class MariaDbContext : DbContext
     // Associations
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Player
+        modelBuilder.Entity<Player>()
+            .HasIndex(p => p.Email).IsUnique();
+
+        modelBuilder.Entity<Player>()
+            .HasIndex(p => p.Name).IsUnique();
+
         // Inventory
 
         // Linking Player with Inventory

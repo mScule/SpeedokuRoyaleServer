@@ -2,5 +2,5 @@ namespace SpeedokuRoyaleServer.Utility;
 
 public static class IdGenerator
 {
-    public static string NewId() =>Guid.NewGuid().ToString();
+    public static string NewId() => Guid.NewGuid().ToString();
 }
