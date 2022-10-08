@@ -11,8 +11,8 @@ using SpeedokuRoyaleServer.Models.DbContexts;
 namespace SpeedokuRoyaleServer.Migrations
 {
     [DbContext(typeof(MariaDbContext))]
-    [Migration("20221008211515_PlayerNameAndEmailToUnique")]
-    partial class PlayerNameAndEmailToUnique
+    [Migration("20221008215038_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -143,24 +143,6 @@ namespace SpeedokuRoyaleServer.Migrations
                     b.HasIndex("PlayerId");
 
                     b.ToTable("SingleplayerGames");
-                });
-
-            modelBuilder.Entity("SpeedokuRoyaleServer.Models.TodoItem", b =>
-                {
-                    b.Property<ulong?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<bool>("IsComplete")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Task")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TodoItems");
                 });
 
             modelBuilder.Entity("SpeedokuRoyaleServer.Models.Inventory", b =>

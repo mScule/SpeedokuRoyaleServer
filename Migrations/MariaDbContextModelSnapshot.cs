@@ -143,24 +143,6 @@ namespace SpeedokuRoyaleServer.Migrations
                     b.ToTable("SingleplayerGames");
                 });
 
-            modelBuilder.Entity("SpeedokuRoyaleServer.Models.TodoItem", b =>
-                {
-                    b.Property<ulong?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint unsigned");
-
-                    b.Property<bool>("IsComplete")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Task")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TodoItems");
-                });
-
             modelBuilder.Entity("SpeedokuRoyaleServer.Models.Inventory", b =>
                 {
                     b.HasOne("SpeedokuRoyaleServer.Models.Item", "Item")
