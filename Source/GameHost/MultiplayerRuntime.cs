@@ -1,4 +1,4 @@
-using SpeedokuRoyaleServer.Models.Services.MariaDB;
+using SpeedokuRoyaleServer.Utility;
 
 namespace SpeedokuRoyaleServer.GameHost;
 
@@ -12,27 +12,25 @@ public class MultiplayerRuntime
     // State
     public RuntimeState State { set; get; } = RuntimeState.WaitingForPlayers;
 
-    // Runtime
-    private DateTime? startTime = null, endTime = null;
+    // Runtime - private
+    private DateTime? startTime = null, endTime = null, now = null;
     private List<ulong> players = new List<ulong>();
     private Dictionary<ulong, ulong> scores = new Dictionary<ulong, ulong>();
 
+    // Runtime - public
     public DateTime? StartTime { get => startTime; }
     public KeyValuePair<ulong, ulong>[] Scores {
         get => scores.ToArray<KeyValuePair<ulong,ulong>>();
     }
+    public ulong? Winner { get; set; } = null;
 
-    public int PlayerAmt()
-    {
-        return players.Count;
-    }
+    // Methods
+    public int PlayerAmt() => players.Count;
 
     public bool HasPlayer(ulong playerId) {
         foreach (ulong id in players)
-        {
             if (playerId == id)
                 return true;
-        }
         return false;
     }
 
@@ -40,7 +38,9 @@ public class MultiplayerRuntime
         Console.WriteLine($"Clearing room {RoomName}");
         this.players.Clear();
         this.scores.Clear();
-        this.State = RuntimeState.WaitingForPlayers;
+
+        this.RoomName = IdGenerator.NewId();
+        this.State    = RuntimeState.WaitingForPlayers;
     }
 
     public void AddPlayer(ulong playerId)
@@ -64,34 +64,47 @@ public class MultiplayerRuntime
         }
     }
 
-    public void AddScore(ulong playerId)
+    public void FinishGame()
     {
-        DateTime now = new DateTime(DateTime.Now.Ticks);
+        ulong? winner = null;
 
-        if (DateTime.Now < this.endTime)
-        {
-            TimeSpan? timeLeft = endTime - now;
-            Console.WriteLine(
-                $"Player {playerId} got a score! Time remaining {timeLeft}"
-            );
-            this.scores[playerId]++;
-        }
-        else
-        {
-            KeyValuePair<ulong, ulong> winner = new KeyValuePair<ulong, ulong>(0,0);
-            ulong highestScore = 0;
+        ulong highestScore = 0;
 
-            foreach(KeyValuePair<ulong, ulong> player in scores)
+        foreach(KeyValuePair<ulong, ulong> player in scores)
+        {
+            if(player.Value > highestScore)
             {
-                if(player.Value > highestScore)
-                {
-                    highestScore = player.Value;
-                    winner = player;
-                }
+                highestScore = player.Value;
+                winner = player.Key;
             }
+        }
 
-            Console.WriteLine($"Gameroom {RoomName} game ended. Winner playerid: {winner.Key}");
-            this.State = RuntimeState.Finished;
+        Console.WriteLine
+        (
+            $"Gameroom {RoomName} game ended. Winner playerid: {winner}"
+        );
+
+        this.State  = RuntimeState.Finished;
+        this.Winner = winner;
+    }
+
+    public void UpdateTimer()
+    {
+        now = new DateTime(DateTime.Now.Ticks);
+        TimeSpan? timeLeft = endTime - now;
+        Console.WriteLine($"Time remaining {timeLeft} for room {RoomName}");
+
+        if (now >= this.endTime)
+            FinishGame();
+    }
+
+    public void AddScore(ulong playerId, ulong amt)
+    {
+        UpdateTimer();
+
+        if (now < this.endTime)
+        {
+            this.scores[playerId] += amt;
         }
     }
 }
