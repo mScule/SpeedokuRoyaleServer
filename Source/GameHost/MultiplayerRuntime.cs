@@ -84,7 +84,7 @@ public class MultiplayerRuntime
             Log($"Game starts in room {RoomName}");
             this.State = RuntimeState.InGame;
             this.endTime =
-                new DateTime(DateTime.Now.Ticks).AddMinutes(GameLength);
+                new DateTime(DateTime.Now.Ticks).AddSeconds(GameLength);
 
             foreach(ulong id in players)
             {
