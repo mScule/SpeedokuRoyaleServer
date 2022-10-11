@@ -19,6 +19,7 @@ public class MultiplayerRuntime
     // Runtime - private
     private DateTime? startTime = null, endTime = null, now = null;
     private List<ulong> players = new List<ulong>();
+
     private Dictionary<ulong, ulong> scores = new Dictionary<ulong, ulong>();
 
     // Runtime - public
@@ -69,6 +70,18 @@ public class MultiplayerRuntime
 
         this.RoomName = IdGenerator.NewId();
         this.State    = RuntimeState.WaitingForPlayers;
+    }
+
+    public bool KillPlayer(ulong playerId)
+    {
+        if (this.players.Contains(playerId)) {
+            players.Remove(playerId);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public void AddPlayer(ulong playerId)

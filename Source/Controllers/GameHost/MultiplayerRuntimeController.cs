@@ -111,6 +111,29 @@ public class MultiplayerRuntimeController : ControllerBase
         return Ok(joinSuccess);
     }
 
+    [HttpPost("{roomName}/Kill")]
+    public async Task<ActionResult<bool>> Kill(ulong playerId, string roomName)
+    {
+        bool killingSuccessfull = false;
+
+        await Task.Run(() => {
+            foreach (MultiplayerRuntime room in gameRooms)
+            {
+                if
+                (
+                    room.RoomName == roomName &&
+                    room.State == RuntimeState.InGame
+                )
+                {
+                    killingSuccessfull = room.KillPlayer(playerId);
+                }
+            }
+        });
+
+        return Ok(killingSuccessfull);
+    }
+
+
     [HttpGet("{roomName}/Status")]
     public async Task<ActionResult<RuntimeState>> Status(string roomName)
     {
