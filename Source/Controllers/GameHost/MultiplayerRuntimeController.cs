@@ -348,10 +348,11 @@ public class MultiplayerRuntimeController : ControllerBase
                 {
                     avaliableRooms.Add(new RoomInfo
                     {
-                        Name    = room.RoomName,
-                        Players = room.PlayerAmt(),
-                        Size    = room.RoomSize,
-                        State   = room.State
+                        Name       = room.RoomName,
+                        Players    = room.PlayerAmt(),
+                        Size       = room.RoomSize,
+                        State      = room.State,
+                        GameLenght = room.GameLength
                     });
                 }
             }
