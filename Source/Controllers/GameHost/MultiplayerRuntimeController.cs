@@ -11,8 +11,8 @@ namespace SpeedokuRoyaleServer.Controllers;
 [Route("[controller]")]
 public class MultiplayerRuntimeController : ControllerBase
 {
-    private static readonly int GeneralGameLength = 5;
-    private static readonly byte GeneralRoomSize = 5;
+    private static readonly int GeneralGameLength = 1;
+    private static readonly byte GeneralRoomSize = 3;
 
     private readonly ILogger<MultiplayerRuntimeController> logger;
 
