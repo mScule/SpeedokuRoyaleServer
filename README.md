@@ -89,3 +89,18 @@ Add new migration:
 
 Update database:
 `dotnet ef database update`
+
+### For hard resetting migrations as a whole
+
+Do this only in situations where you don't mind losing data.
+Wipes all migration data and the database and build new from
+current dbsets.
+
+Before you do this, be sure that the code can be built, because
+compiling errors will prevent commands below from executing
+correctly.
+
+1. Delete Migrations folder
+2. Run `dotnet ef database drop -f -v`
+3. Run `dotnet ef migrations add Initial`
+4. Run `dotnet ef database update`
